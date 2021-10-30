@@ -68,6 +68,9 @@ export default {
         onFirstStep() {
             this.firstStep = true
             this.SET_FIRST_CELL_ACTIVE(false)
+            setTimeout(() => {
+
+              }, 3000);
         }
     },
     watch: {
@@ -328,6 +331,10 @@ export default {
     }
     &--player-one-step-one {
         .page-game__player--1 {
+            transform: translate(126%, -72%);
+        }
+        .page-game__player--2 {
+            transition-delay: 6s;
             transform: translate(126%, -72%);
         }
         .page-game__coin--1 {
