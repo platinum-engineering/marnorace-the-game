@@ -1,8 +1,8 @@
 <template>
-    <div class="page-game page-game--step-1" :class="classes">
+    <div :class="classes" class="page-game page-game--step-1">
         <div class="page-game__box">
             <div class="page-game__map">
-                <span class="page-game__info">Player 1 Turn</span>
+                <span class="page-game__info">Player {{ tern }} Turn</span>
 
                 <span v-if="isFirstCellActive" class="page-game__cell page-game__cell--1" @click="onFirstStep"><span></span></span>
 
@@ -19,32 +19,71 @@
                 <UiSpaceship class="page-game__map-spaceship page-game__map-spaceship--2"/>
                 <UiSpaceship class="page-game__map-spaceship page-game__map-spaceship--3"/>
 
-                <UiPlayerCard class="page-game__player page-game__player--1" img="1" @click="onClickPlayer(1)"/>
+                <UiPlayerCard
+                    class="page-game__player page-game__player--1"
+                    img="1" @click="onClickPlayer(1)"
+                    :class="{'page-game__player--plus-life': firstPart.firstPlayerPlusLife}"
+                />
                 <UiPlayerCard class="page-game__player page-game__player--2" img="2" @click="onClickPlayer(2)"/>
                 <UiPlayerCard
+                    :class="{'page-game__player--minus-life': playerThreeMinusLive}"
                     class="page-game__player page-game__player--3"
                     img="3"
                     @click="onClickPlayer(3)"
-                    :class="{'page-game__player--minus-life': playerThreeMinusLive}"
                 />
 
                 <span class="page-game__coin page-game__coin--1"><span></span></span>
             </div>
         </div>
-        <BlockPlayerBar class="page-game__player-options"/>
+
+        <BlockPlayerBar
+            :is-accept-active-count="acceptActiveCount"
+            class="page-game__player-options"
+            :is-accept-active="isAcceptActive"
+            :is-skills-disabled="isSkillsDisabled"
+            :is-opponent-turn="firstPart.isSecondPlayerActive"
+            @isAcceptDisabled="isAcceptActive = false"
+            @nextPlayerStart="firstPart.isSecondPlayerActive = true"
+        />
+
+        <transition name="fade">
+            <SectionPopup
+                class="page-game__popup"
+                :img="activeEvent"
+                :is-popup-closed-btn="isPopupClosedBtn"
+                v-if="isPopupActive"
+                @click="isPopupActive = false"
+            />
+        </transition>
     </div>
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex'
+import {mapMutations, mapState} from 'vuex'
 import BlockPlayerBar from '@/components/blocks/player-bar'
+import SectionPopup from '@/components/sections/popup'
 
 export default {
     components: {
+        SectionPopup,
         BlockPlayerBar
     },
     data() {
         return {
+            el: '',
+            tern: 1,
+            acceptActiveCount: 0,
+            isAcceptActive: false,
+            isSkillsDisabled: false,
+            firstPart: {
+                firstPlayerPlusLife: false,
+                isFirstPlayerActive: false,
+                isSecondPlayerActive: false,
+                isThirdPlayerActive: false,
+            },
+            isPopupActive: false,
+            isPopupClosedBtn: true,
+            activeEvent: 1,
             isActiveStep: 1,
             playerThreeMinusLive: false,
             firstStep: false
@@ -69,15 +108,68 @@ export default {
             this.firstStep = true
             this.SET_FIRST_CELL_ACTIVE(false)
             setTimeout(() => {
-
-              }, 3000);
+                this.isPopupActive = true
+            }, 3000)
         }
     },
     watch: {
         isFirstCellActive() {
-
             console.log(89)
+        },
+        isPopupActive(val) {
+            if (!val && this.isActiveStep === 1) {
+                // this.el.classList.add('page-game-3')
+                this.isAcceptActive = true
+            }
+        },
+        isAcceptActive() {
+            this.acceptActiveCount++
+        },
+        acceptActiveCount(val) {
+            if (val === 2) {
+               setTimeout(() => {
+                   this.firstPart.firstPlayerPlusLife = true
+                   this.isSkillsDisabled = true
+                 }, 500);
+               setTimeout(() => {
+                   this.isSkillsDisabled = true
+                 }, 1000);
+            }
+        },
+        'firstPart.isSecondPlayerActive'() {
+            this.el.classList.add('page-game--3')
+            this.tern = 2
+            setTimeout(() => {
+                  this.isPopupActive = true
+                  this.activeEvent = 2
+                    this.isPopupClosedBtn = false
+              }, 7000);
+            setTimeout(() => {
+                this.isPopupActive = false
+                // const i = setInterval(() => {
+                //     if (this.coins < count) {
+                //         this.coins++
+                //     } else if (this.coins > count) {
+                //         this.coins--
+                //     } else {
+                //         clearInterval(i)
+                //     }
+                // }, 3)
+
+
+                this.firstPart.isThirdPlayerActive = true
+              }, 12000);
+        },
+        'firstPart.isThirdPlayerActive'() {
+            this.tern = 3
+            this.el.classList.add('page-game--4')
+            setTimeout(() => {
+
+              }, 3000);
         }
+    },
+    mounted() {
+        this.el = document.querySelector('.page-game')
     }
 }
 </script>
@@ -107,18 +199,18 @@ export default {
         position: absolute;
         right: 60px;
         left: 60px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
         width: 240px;
         height: 140px;
-        display: inline-flex;
-        background-image: url('/images/info-bg.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-        color: #ffffff;
-        align-items: center;
-        justify-content: center;
-        background-position: center;
-        font-weight: 700;
         font-size: 24px;
+        color: #ffffff;
+        font-weight: 700;
+        background-image: url('/images/info-bg.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
     }
 
     &__main-map {
@@ -225,13 +317,13 @@ export default {
 
     &__player {
         position: absolute;
-        cursor: pointer;
         top: -100%;
         z-index: 5;
+        cursor: pointer;
+        transition-duration: 3s;
         animation-duration: 0.3s;
         animation-delay: 4s;
         animation-fill-mode: forwards;
-        transition-duration: 3s;
 
         &--1 {
             left: 15.8%;
@@ -258,22 +350,23 @@ export default {
     }
 
     &__coin {
-        pointer-events: none;
         position: absolute;
         z-index: 4;
         display: inline-flex;
         opacity: 0;
+        transition-duration: 0.3s;
         animation-name: op;
         animation-duration: 0.3s;
         animation-delay: 5s;
+        pointer-events: none;
         animation-fill-mode: forwards;
-        transition-duration: 0.3s;
 
         &--1 {
             top: 45%;
+            left: 30.8%;
+
             z-index: 6;
 
-            left: 30.8%;
             span {
                 width: 60px;
                 height: 60px;
@@ -286,26 +379,29 @@ export default {
 
         }
     }
+
     &__cell {
+        position: absolute;
+        top: 51%;
+        left: 33%;
+        z-index: 5;
+        display: flex;
         width: 15px;
         height: 15px;
         transform: rotate(45deg);
-        left: 33%;
-        top: 51%;
-        z-index: 5;
-        display: flex;
-        position: absolute;
+
         span {
-            align-items: center;
+            display: inline-flex;
             justify-content: center;
+            align-items: center;
             width: 0;
             height: 0;
-            display: inline-flex;
             box-shadow: 0 0 13px 18px #e83d81;
         }
+
         &--1 {
-            left: 33%;
             top: 51%;
+            left: 33%;
         }
     }
 
@@ -321,27 +417,73 @@ export default {
         //animation-delay: 1s;
         animation-fill-mode: forwards;
     }
+
+    &__popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 20;
+    }
+
     &--step-1 {
         .page-game__player--2 {
             filter: grayscale(100%);
         }
+
         .page-game__player--3 {
             filter: grayscale(100%);
         }
     }
+
     &--player-one-step-one {
         .page-game__player--1 {
-            transform: translate(126%, -72%);
-        }
-        .page-game__player--2 {
-            transition-delay: 6s;
-            transform: translate(126%, -72%);
-        }
-        .page-game__coin--1 {
-            transform: scale(0);
-            transition-delay: 2s;
+            transform: translate(123%, -69%);
         }
 
+        //.page-game__player--2 {
+        //    transition-delay: 6s;
+        //    transform: translate(126%, -72%);
+        //}
+
+        .page-game__coin--1 {
+            transition-delay: 2s;
+            transform: scale(0);
+        }
+
+    }
+    &--3 {
+        .page-game__player--1 {
+            opacity: 0.2;
+            filter: grayscale(100%);
+
+        }
+
+        .page-game__player--2 {
+            transition-property: filter, transform;
+            filter: grayscale(0);
+            transition-delay: 0s, 4s;
+            transform: translate(84%, -43%);
+        }
+    }
+    &--4 {
+        //.page-game__player--1 {
+        //    opacity: 0.2;
+        //    filter: grayscale(100%);
+        //
+        //}
+
+        .page-game__player--2 {
+            filter: grayscale(100%);
+        }
+        .page-game__player--3 {
+            transition-property: filter, transform;
+            filter: grayscale(0);
+            transition-delay: 0s, 4s;
+            transition-duration: 3s;
+            transform: translate(111%, -56%);
+        }
     }
 }
 </style>

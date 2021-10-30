@@ -9,7 +9,9 @@
         <div class="block-player-bar__coin">
             <UiCoin>200</UiCoin>
         </div>
-        <div class="block-player-bar__abilities">
+        <div class="block-player-bar__abilities"
+             :class="{[`block-player-bar__abilities--disabled`]: isSkillsDisabled}"
+        >
             <span :class="{'block-player-bar__ability--disabled': isAbilityOneDisabled}"
                   class="block-player-bar__ability block-player-bar__ability--1">
                 <span>{{ ability1 }}</span>
@@ -17,7 +19,9 @@
             <span
                 :class="{'block-player-bar__ability--disabled': isAbilityTwoDisabled}"
                 class="block-player-bar__ability block-player-bar__ability--2"
-            ></span>
+            >
+                <span> {{ ability2 }} </span>
+            </span>
             <span
                 :class="{'block-player-bar__ability--disabled': isAbilityThreeDisabled}"
                 class="block-player-bar__ability block-player-bar__ability--3"
@@ -35,8 +39,11 @@
             <span v-else>{{ diceCount }}</span>
         </div>
         <button class="block-player-bar__btn" @click="onRoll">
-            <img alt="" src="/images/roll-btn.png">
+            <img alt="" src="/images/play-btn.png">
+            <span>{{ text }}</span>
         </button>
+
+        <div class="block-player-bar__opponent-turn" :class="{['block-player-bar__opponent-turn--active']: isSkillsDisabled}">Your opponent turn</div>
     </div>
 </template>
 
@@ -44,10 +51,31 @@
 import {mapState, mapMutations} from 'vuex'
 
 export default {
+    props: {
+        isAcceptActive: {
+            type: Boolean,
+            default: false
+        },
+        isSkillsDisabled: {
+            type: Boolean,
+            default: false
+        },
+        isOpponentTurn: {
+            type: Boolean,
+            default: false
+        },
+        isAcceptActiveCount: {
+            type: [Number, String],
+            default: 0
+        },
+    },
     data() {
         return {
+            isBtnTextCount: 0,
+            text: 'roll',
+            isOp: false,
             ability1: 1,
-            ability2: '',
+            ability2: 1,
             ability3: 2,
             isAbilityOneDisabled: false,
             isAbilityTwoDisabled: false,
@@ -57,12 +85,29 @@ export default {
         }
     },
     computed: {
+        // eslint-disable-next-line vue/return-in-computed-property
         ...mapState(['activeStep'])
     },
 
     methods: {
         ...mapMutations(['SET_FIRST_CELL_ACTIVE']),
         onRoll() {
+            this.isBtnTextCount++
+
+            if (this.isBtnTextCount === 2) {
+                this.text = 'END TURN'
+                console.log(77)
+                this.$emit('nextPlayerStart')
+            }
+
+            if (this.isAcceptActive) {
+                this.$emit('isAcceptDisabled')
+                return
+            }
+            if (this.isSkillsDisabled) {
+                this.$emit('nextPlayerStart')
+                return
+            }
             if (this.activeStep === 1) {
                 this.isRoll = true
                 setTimeout(() => {
@@ -78,11 +123,24 @@ export default {
                 this.isAbilityThreeDisabled = true
             }
         }
+    },
+    watch: {
+        isAcceptActive(val) {
+            if (val) {
+                this.text = 'accept'
+            }
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.fade-2-enter-active, .fade-2-leave-active {
+    transition: opacity 1s;
+}
+.fade-2-enter, .fade-2-leave-to {
+    opacity: 0;
+}
 .block-player-bar {
 
     position: relative;
@@ -129,6 +187,10 @@ export default {
         display: inline-flex;
         margin-left: 100px;
         gap: 80px;
+        &--disabled {
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
 
     }
 
@@ -230,6 +292,7 @@ export default {
     }
 
     &__btn {
+        text-transform: uppercase;
         position: relative;
         width: 200px;
         height: 60px;
@@ -256,6 +319,36 @@ export default {
             max-width: 100%;
             transform: translate(-50%, -50%);
             object-fit: contain;
+        }
+        span {
+            font-family: $family--default;
+            padding-top: 4px;
+            font-size: 20px;
+            position: relative;
+            top: 3px;
+            font-weight: 700;
+            z-index: 3;
+        }
+    }
+
+    &__opponent-turn {
+        width: 100%;
+        height: 100%;
+        left: 0;
+        bottom: -100%;
+        color: #ffffff;
+        display: flex;
+        position: absolute;
+        letter-spacing: 2px;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        transition-duration: 0.3s;
+        opacity: 0;
+        background-color: rgba(32, 12, 113, 0.81);
+        &--active {
+            bottom: 0;
+            opacity: 1;
         }
     }
 
