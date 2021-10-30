@@ -1,0 +1,157 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+html,body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F5F5FA;
+}
+
+input:not([type=checkbox]):not([type=radio]),
+textarea,
+select,
+button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+#app {
+    font-family: $family--default;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: $color--text;
+}
+
+button {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+    user-select: none;
+}
+
+input {
+    outline: none;
+}
+
+.wrap {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+
+.__rail-is-vertical {
+    right: 0 !important;
+}
+
+.component-fade-enter-active, .component-fade-leave-active {
+    transition: opacity .2s ease;
+}
+.component-fade-enter, .component-fade-leave-to {
+    opacity: 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+
+.negative {
+    color: $color--negative
+}
+
+.no-scroll {
+    overflow: hidden !important;
+}
+
+
+/* полоса прокрутки (скроллбар) */
+::-webkit-scrollbar {
+    width: 5px; /* ширина для вертикального скролла */
+    height: 8px; /* высота для горизонтального скролла */
+    background-color: rgba($color--primary, 0.3)
+}
+
+/* ползунок скроллбара */
+::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(to top, #6749E8, #EC2A7C);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($color--primary, 0.3)
+}
+
+/* Стрелки */
+
+::-webkit-scrollbar-button:vertical:start:decrement {
+    background-color: transparent;
+    display: none;
+}
+
+::-webkit-scrollbar-button:vertical:end:increment {
+    background-color: transparent;
+    display: none;
+}
+
+::-webkit-scrollbar-button:horizontal:start:decrement {
+    background-color: transparent;
+    display: none;
+}
+
+::-webkit-scrollbar-button:horizontal:end:increment {
+    background-color: transparent;
+    display: none;
+}
+
+:root{
+    scrollbar-color: $color--primary rgba($color--primary, 0.1) !important;
+    scrollbar-width: thin !important;
+}
+
+.hover {
+    //background-color: #d99e46;
+    padding: 15px 30px;
+    border-radius: 10px;
+    color: #ffffff;
+    background-color:#797e8c;
+    opacity: 0;
+    transition-duration: 0.3s;
+    position: absolute;
+    &-top {
+       &:before {
+           left: calc(50% - 8px);
+           transform: rotate(45deg);
+           top: -8px;
+       }
+    }
+    &-left {
+        &:before {
+            left: -8px;
+            top: calc(50% - 8px);
+            transform: rotate(45deg);
+        }
+    }
+
+    &:before {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        background-color: inherit;
+    }
+}
