@@ -51,9 +51,23 @@ export default {
                     text-align: center;
                     font-size: 4rem;
                     color: white;
+                    opacity: 0;
+                    animation: fadeIn 1.3s linear 2s 1 forwards;
                 }
             }
         }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(150%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
