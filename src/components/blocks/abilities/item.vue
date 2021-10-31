@@ -5,6 +5,9 @@
             alt="Ability"
             class="block-item__img"
         >
+        <span v-if="tooltip" class="hover hover-bottom block-item_tooltip">
+            {{ tooltip }}
+        </span>
     </article>
 </template>
 
@@ -15,6 +18,10 @@ export default {
             type: Number,
             default: 0
         },
+        tooltip: {
+            type: String,
+            default: ''
+        }
     },
 }
 </script>
@@ -35,6 +42,20 @@ export default {
         left: 50%;
         width: 30%;
         transform: translate(-50%, -50%);
+    }
+
+    &_tooltip {
+        position: absolute;
+        top: -120%;
+        width: 120px;
+        text-align: center;
+        z-index: 1;
+    }
+
+    &:hover {
+        .block-item_tooltip{
+            opacity: 1;
+        }
     }
 }
 </style>

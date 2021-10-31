@@ -37,6 +37,11 @@ export default {
     }
     30% {
         opacity: 1;
+        top: -30px;
+    }
+    70% {
+        opacity: 1;
+        top: -30px;
     }
     100% {
         opacity: 0;
@@ -79,7 +84,7 @@ export default {
             box-shadow: 0 4px 20px 6px rgba(255, 120, 0, 0.8);
             .block-play__tooltip {
                 animation-name: trY;
-                animation-duration: 0.5s;
+                animation-duration: 2s;
                 animation-fill-mode: forwards;
                 animation-timing-function: linear;
             }

@@ -41,7 +41,7 @@ export default {
 }
 .block-item {
     position: relative;
-    transition-duration: 1s;
+    transition-duration: 0.22s;
     &:hover {
         transform: scale(1.2);
         .block-item__shadow {

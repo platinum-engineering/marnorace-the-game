@@ -7,22 +7,40 @@
         </p>
         <div class="block-ability__items">
             <LBlockItem
-                v-for="item in 3"
-                :key="item"
-                :img="item"
+                v-for="item in items"
+                :key="item.id"
+                :img="item.id"
+                :tooltip="item.tooltip"
                 class="block-ability__item"
             />
         </div>
     </section>
 </template>
 
-<script>
+<script> 
+
 import LBlockItem from './item'
 
 export default {
     components: {
         LBlockItem
-    }
+    },
+    data: () => ({
+        items: [
+            {
+                id: 1,
+                tooltip: 'Reroll the Dice'
+            },
+            {
+                id: 2,
+                tooltip: 'Ignore the Event'
+            },
+            {
+                id: 3,
+                tooltip: 'Stab an opponent'
+            }
+        ]
+    })
 }
 </script>
 

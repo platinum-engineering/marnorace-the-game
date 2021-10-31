@@ -14,13 +14,13 @@
                 </div>
                 <div class="section-hero__abilities">
                     <div class="section-hero__ability-box">
-                        <UiPassiveAbility class="section-hero__ability"/>
+                        <UiPassiveAbility class="section-hero__ability" icon="us"/>
                         <span class="hover hover-left section-hero__ability-tooltip">
                             You are always start first
                         </span>
                     </div>
                     <div class="section-hero__ability-box">
-                        <UiPassiveAbility class="section-hero__ability" icon="us"/>
+                        <UiPassiveAbility class="section-hero__ability"/>
                         <span class="hover hover-left section-hero__ability-tooltip">
                             No penalty on Lightning Ground
                         </span>
@@ -265,7 +265,7 @@ export default {
     &__info {
         z-index: 2;
         width: 105%;
-        padding: 4vw 67px;
+        padding: 4vw 42px;
         color: #ffffff;
         font-weight: 700;
         background-image: url(/images/info-bg.png);

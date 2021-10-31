@@ -18,6 +18,11 @@ const router = new VueRouter({
             name: 'game',
             component: require('@/pages/game/').default,
         },
+        {
+            path: '/finish',
+            name: 'finish',
+            component: require('@/pages/finish/').default,
+        },
         // {
         //     path: '/404',
         //     name: '404',
